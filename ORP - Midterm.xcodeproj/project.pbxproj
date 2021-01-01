@@ -7,7 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		703FDEB825920653002AB8E2 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 703FDEB625920653002AB8E2 /* Logger.cpp */; };
 		7071239A258BCF7A00A36FBD /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 70712399258BCF7A00A36FBD /* main.cpp */; };
+		707123AE258BCFB700A36FBD /* MerkelMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 707123A4258BCFB600A36FBD /* MerkelMain.cpp */; };
+		707123AF258BCFB700A36FBD /* CSVReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 707123A6258BCFB600A36FBD /* CSVReader.cpp */; };
+		707123B0258BCFB700A36FBD /* OrderBookEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 707123A7258BCFB600A36FBD /* OrderBookEntry.cpp */; };
+		707123B1258BCFB700A36FBD /* Bot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 707123A9258BCFB600A36FBD /* Bot.cpp */; };
+		707123B2258BCFB700A36FBD /* Wallet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 707123AA258BCFB600A36FBD /* Wallet.cpp */; };
+		707123B3258BCFB700A36FBD /* OrderBook.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 707123AC258BCFB700A36FBD /* OrderBook.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -23,8 +30,24 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		703FDEB625920653002AB8E2 /* Logger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Logger.cpp; sourceTree = "<group>"; };
+		703FDEB725920653002AB8E2 /* Logger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Logger.hpp; sourceTree = "<group>"; };
+		703FDEBA259BB3B0002AB8E2 /* 20200601.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 20200601.csv; sourceTree = "<group>"; };
 		70712396258BCF7A00A36FBD /* ORP - Midterm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "ORP - Midterm"; sourceTree = BUILT_PRODUCTS_DIR; };
 		70712399258BCF7A00A36FBD /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		707123A1258BCFB600A36FBD /* Bot.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Bot.hpp; sourceTree = "<group>"; };
+		707123A2258BCFB600A36FBD /* OrderBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderBook.h; sourceTree = "<group>"; };
+		707123A3258BCFB600A36FBD /* CSVReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSVReader.h; sourceTree = "<group>"; };
+		707123A4258BCFB600A36FBD /* MerkelMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MerkelMain.cpp; sourceTree = "<group>"; };
+		707123A5258BCFB600A36FBD /* MerkelMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MerkelMain.h; sourceTree = "<group>"; };
+		707123A6258BCFB600A36FBD /* CSVReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CSVReader.cpp; sourceTree = "<group>"; };
+		707123A7258BCFB600A36FBD /* OrderBookEntry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OrderBookEntry.cpp; sourceTree = "<group>"; };
+		707123A8258BCFB600A36FBD /* 20200317.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = 20200317.csv; sourceTree = "<group>"; };
+		707123A9258BCFB600A36FBD /* Bot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bot.cpp; sourceTree = "<group>"; };
+		707123AA258BCFB600A36FBD /* Wallet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Wallet.cpp; sourceTree = "<group>"; };
+		707123AB258BCFB700A36FBD /* Wallet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Wallet.h; sourceTree = "<group>"; };
+		707123AC258BCFB700A36FBD /* OrderBook.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OrderBook.cpp; sourceTree = "<group>"; };
+		707123AD258BCFB700A36FBD /* OrderBookEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OrderBookEntry.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +81,22 @@
 			isa = PBXGroup;
 			children = (
 				70712399258BCF7A00A36FBD /* main.cpp */,
+				707123A8258BCFB600A36FBD /* 20200317.csv */,
+				703FDEBA259BB3B0002AB8E2 /* 20200601.csv */,
+				707123A9258BCFB600A36FBD /* Bot.cpp */,
+				707123A1258BCFB600A36FBD /* Bot.hpp */,
+				707123A6258BCFB600A36FBD /* CSVReader.cpp */,
+				707123A3258BCFB600A36FBD /* CSVReader.h */,
+				707123A4258BCFB600A36FBD /* MerkelMain.cpp */,
+				707123A5258BCFB600A36FBD /* MerkelMain.h */,
+				707123AC258BCFB700A36FBD /* OrderBook.cpp */,
+				707123A2258BCFB600A36FBD /* OrderBook.h */,
+				707123A7258BCFB600A36FBD /* OrderBookEntry.cpp */,
+				707123AD258BCFB700A36FBD /* OrderBookEntry.h */,
+				707123AA258BCFB600A36FBD /* Wallet.cpp */,
+				707123AB258BCFB700A36FBD /* Wallet.h */,
+				703FDEB625920653002AB8E2 /* Logger.cpp */,
+				703FDEB725920653002AB8E2 /* Logger.hpp */,
 			);
 			path = "ORP - Midterm";
 			sourceTree = "<group>";
@@ -118,6 +157,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				707123B0258BCFB700A36FBD /* OrderBookEntry.cpp in Sources */,
+				707123B3258BCFB700A36FBD /* OrderBook.cpp in Sources */,
+				707123AF258BCFB700A36FBD /* CSVReader.cpp in Sources */,
+				703FDEB825920653002AB8E2 /* Logger.cpp in Sources */,
+				707123B2258BCFB700A36FBD /* Wallet.cpp in Sources */,
+				707123AE258BCFB700A36FBD /* MerkelMain.cpp in Sources */,
+				707123B1258BCFB700A36FBD /* Bot.cpp in Sources */,
 				7071239A258BCF7A00A36FBD /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
