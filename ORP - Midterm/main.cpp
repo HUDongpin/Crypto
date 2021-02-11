@@ -5,6 +5,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <chrono>
 
 int main()
 {
@@ -13,21 +14,19 @@ int main()
     wallet.insertCurrency("ETH", 10000);
     wallet.insertCurrency("USDT", 10000);
     wallet.insertCurrency("DOGE", 10000);
-    
-    std::cout<< "Data are being loaded. Please wait." << std::endl;
-    OrderBook orderBook{"20200601.csv"}; // Read the CSV file and convert data into a map.
-    std::string currentTime = orderBook.getEarliestTime();
-    
+        
     std::cout << "How do you want to trade? Press 'm' for manual mode or 'b' for bot mode" << std::endl;
     std::string flag;
     std::getline(std::cin, flag);
 
-    
     while(true)
     {
         if(flag=="m") // manual mode
         {
             std::cout << "Manual mode is selected." << std::endl;
+            std::cout<< "Data are being loaded. Please wait." << std::endl;
+            OrderBook orderBook{"20200601.csv"}; // Read the CSV file and convert data into a map.
+            std::string currentTime = orderBook.getEarliestTime();
             MerkelMain app{orderBook, wallet, currentTime};
             app.init();
             break;
@@ -35,6 +34,9 @@ int main()
         if(flag=="b") // bot mode
         {
             std::cout << "Bot mode is selected." << std::endl;
+            std::cout<< "Data are being loaded. Please wait." << std::endl;
+            OrderBook orderBook{"20200601.csv"}; // Read the CSV file and convert data into a map.
+            std::string currentTime = orderBook.getEarliestTime();
             Bot bot{orderBook, wallet, currentTime};
             bot.init();
             break;

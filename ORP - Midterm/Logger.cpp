@@ -26,16 +26,16 @@ void Logger::BidAskLog(OrderBookType orderType, std::string product, long double
     BidAsk.close();
 }
 
-void Logger::MatchLog(OrderBookType orderType, std::string product, long double price, std::string amount, std::string timestamp)
+void Logger::MatchLog(OrderBookType orderType, std::string product, long double price, std::string amount, std::string timestamp, long double longterm_EMA, long double shortterm_EMA)
 {
     std::fstream Match;
     
     Match.open("Match.txt", std::fstream::app | std::fstream::out);
     if (orderType == OrderBookType::bidsale){
-        Match << timestamp << "[INFO] Bid is successfully made. Product : " << product << "  Price : " << price << "  Amount : " << amount <<"\n";
+        Match << timestamp << "[INFO] Bid is successfully made. Product : " << product << "  Price : " << price << "  Amount : " << amount <<". Current long-term bid EMA is " << longterm_EMA << ". Short-term bid EMA is " << shortterm_EMA << "." << "\n";
     }
     else{
-        Match << timestamp << "[INFO] Ask is successfully made. Product : " << product << "  Price : " << price << "  Amount : " << amount << "\n";
+        Match << timestamp << "[INFO] Ask is successfully made. Product : " << product << "  Price : " << price << "  Amount : " << amount <<". Current long-term ask EMA is " << longterm_EMA << ". Short-term ask EMA is " << shortterm_EMA << "." << "\n";
     }
     Match.close();
 }

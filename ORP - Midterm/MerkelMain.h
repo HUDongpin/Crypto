@@ -14,22 +14,25 @@ class MerkelMain
         MerkelMain(OrderBook& _orderBook, Wallet& _wallet, std::string& _timestamp);
         // init function is the overarching function which triggers the simulation's functions whenever necessary. It receives no input, and also does not return any output.
         void init();
-        
-    private: 
+    private:
+        int timestamp_counter = 1;
         void printMenu();
         void printHelp();
         void printMarketStats();
         void enterAsk();
         void enterBid();
         void printWallet();
+        void botModeStart();
         void gotoNextTimeframe();
+        void WithdrawOrder();
         int getUserOption();
         void processUserOption(int userOption);
 
         std::string currentTime;
         std::vector<std::string> currentProducts;
-        int timestamp_counter = 1;
         OrderBook& orderBook;
         Wallet& wallet;
+        bool loop_stopper = true;
+        std::vector<OrderBookEntry> tracker;
 
 };

@@ -36,7 +36,4 @@ class OrderBook
         std::unordered_set<std::string> products;
 
     private:
-        
-
-
 };

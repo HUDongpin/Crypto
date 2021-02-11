@@ -29,11 +29,9 @@ class Wallet
         // toString function generates a string representation of the wallet. It neither receives any input nore returns any output.*/
         std::string toString();
         friend std::ostream& operator<<(std::ostream& os, Wallet& wallet);
-
         
     private:
         std::map<std::string,double> currencies;
-
 };
 
 

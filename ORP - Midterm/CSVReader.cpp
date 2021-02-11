@@ -7,7 +7,7 @@
 CSVReader::CSVReader()
 {
 }
-
+//============================================================================================================
 std::map<std::string, std::vector<OrderBookEntry>> CSVReader::readCSV(std::string csvFileName)
 {
     std::map<std::string, std::vector<OrderBookEntry>> entries;
@@ -24,7 +24,7 @@ std::map<std::string, std::vector<OrderBookEntry>> CSVReader::readCSV(std::strin
                 std::vector<OrderBookEntry> obe_vector;
                 obe_vector.push_back(obe);
                 ret = entries.emplace(tokenized[0], obe_vector);
-                if(ret.second==false)
+                if(ret.second==false) // if there is already a vector mapped with the same timestamp
                 {
                     entries[tokenized[0]].push_back(obe);
                 }
@@ -37,7 +37,7 @@ std::map<std::string, std::vector<OrderBookEntry>> CSVReader::readCSV(std::strin
     }
     return entries; 
 }
-
+//============================================================================================================
 std::vector<std::string> CSVReader::tokenise(std::string csvLine, char separator)
 {
    std::vector<std::string> tokens;
@@ -55,7 +55,7 @@ std::vector<std::string> CSVReader::tokenise(std::string csvLine, char separator
 
    return tokens; 
 }
-
+//============================================================================================================
 OrderBookEntry CSVReader::stringsToOBE(std::vector<std::string> tokens)
 {
     double price, amount;
@@ -83,8 +83,7 @@ OrderBookEntry CSVReader::stringsToOBE(std::vector<std::string> tokens)
 
     return obe; 
 }
-
-
+//============================================================================================================
 OrderBookEntry CSVReader::stringsToOBE(std::string priceString, 
                                     std::string amountString, 
                                     std::string timestamp, 

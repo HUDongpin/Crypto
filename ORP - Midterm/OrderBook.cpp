@@ -9,11 +9,13 @@ OrderBook::OrderBook(std::string filename)
     orders = CSVReader::readCSV(filename);
 }
 
+//============================================================================================================
+
 std::unordered_set<std::string> OrderBook::getKnownProducts()
 {
     if(products.empty()) // If this function has run before, then it shouldn't run again. Just use cached data.
     {
-        for(const auto& e: orders)
+        for(const auto& e : orders)
         {
             for(const auto& v: e.second)
             {
@@ -23,6 +25,8 @@ std::unordered_set<std::string> OrderBook::getKnownProducts()
     }
     return products;
 }
+
+//============================================================================================================
 
 std::vector<OrderBookEntry> OrderBook::getOrders(OrderBookType type,
                                         std::string product,
@@ -40,6 +44,7 @@ std::vector<OrderBookEntry> OrderBook::getOrders(OrderBookType type,
     return orders_sub;
 }
 
+//============================================================================================================
 
 double OrderBook::getHighPrice(std::vector<OrderBookEntry>& orders)
 {
@@ -51,6 +56,7 @@ double OrderBook::getHighPrice(std::vector<OrderBookEntry>& orders)
     return max;
 }
 
+//============================================================================================================
 
 double OrderBook::getLowPrice(std::vector<OrderBookEntry>& orders)
 {
@@ -62,10 +68,14 @@ double OrderBook::getLowPrice(std::vector<OrderBookEntry>& orders)
     return min;
 }
 
+//============================================================================================================
+
 std::string OrderBook::getEarliestTime()
 {
     return orders.begin()->first;
 }
+
+//============================================================================================================
 
 std::string OrderBook::getNextTime(const std::string& timestamp)
 {
@@ -78,10 +88,14 @@ std::string OrderBook::getNextTime(const std::string& timestamp)
     return Next->first;
 }
 
+//============================================================================================================
+
 void OrderBook::insertOrder(OrderBookEntry& order, std::string timestamp)
 {
     orders[timestamp].push_back(order);
 }
+
+//============================================================================================================
 
 std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std::string timestamp)
 {
@@ -108,7 +122,7 @@ std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std:
         for (OrderBookEntry& bid : bids)
         {
             // if bid.price >= ask.price # we have a match 
-            if (bid.price >= ask.price)
+            if (bid.price >= ask.price && bid.amount > 0 && ask.amount >0)
             {
             OrderBookEntry sale{ask.price, 0, timestamp, 
                 product, 
@@ -151,8 +165,7 @@ std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std:
                     break;
                 }
                 // if bid.amount < ask.amount # bid is completely gone, slice the ask 
-                if (bid.amount < ask.amount && 
-                   bid.amount > 0 && ask.amount >0)
+                if (bid.amount < ask.amount)
                 {
                     sale.amount = bid.amount;
                     sales.push_back(sale);

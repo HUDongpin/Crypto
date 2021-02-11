@@ -2,11 +2,11 @@
 #include <chrono>
 
 Bot::Bot(OrderBook& _orderBook, Wallet& _wallet, std::string& _timestamp):
-    orderBook(_orderBook), wallet(_wallet), CurrentTime(_timestamp) 
+orderBook(_orderBook), wallet(_wallet), CurrentTime(_timestamp)
 {
 }
 //============================================================================================================
-void Bot::init()
+void Bot::init(int timestamp_counter)
 {
     Logger::AssetLog(wallet.toString(), CurrentTime);
     
@@ -16,7 +16,7 @@ void Bot::init()
     while(true){
         if(flag == "y") // Automatic withdrawl activated 
         {
-            auto start = std::chrono::steady_clock::now(); // to calculate execution time 
+            auto start = std::chrono::steady_clock::now(); // to calculate execution time  - start time
             std::cout << "The trading is initiated." << std::endl;
             while(Loop_stopper){
                 for (std::string p : orderBook.getKnownProducts())
@@ -27,7 +27,7 @@ void Bot::init()
                 AutomaticWithdrawOrder();
                 GoToNextTimeframe();
             }
-            auto end = std::chrono::steady_clock::now();
+            auto end = std::chrono::steady_clock::now(); // the end time.
             std::chrono::duration<double> execution_seconds = end - start;
             std::cout << "Execution time: " << execution_seconds.count() << " seconds" << "\n" <<std::endl;
             break;
@@ -84,33 +84,33 @@ long double Bot::ClosingPrice(std::string product, OrderBookType orderType)
     {
         if(timestamp_counter == 1) // For the very first timestamp, simply store vector
         {
-            Closing_Bid_Price_store.insert(std::pair<std::string, std::map<int, long double>> (product, price_store));
+            Closing_Bid_Price_Store.insert(std::pair<std::string, std::map<int, long double>> (product, price_store));
         }
         else
         {
-            ret = Closing_Bid_Price_store.find(product)->second.emplace(timestamp_counter, sum_total/counter); // iterator mapped between vector and boolean
+            ret = Closing_Bid_Price_Store.find(product)->second.emplace(timestamp_counter, sum_total/counter); // iterator mapped between vector and boolean
             
             if(ret.second == true) // if data could be stored in the map, this means that there is no duplicate with the same timestamp within the map. 
             {
-                Closing_Bid_Price_store.insert(std::pair<std::string, std::map<int, long double>> (product, price_store));
+                Closing_Bid_Price_Store.insert(std::pair<std::string, std::map<int, long double>> (product, price_store));
             }
         }
     }
     else{
         if(timestamp_counter == 1)
         {
-            Closing_Ask_Price_store.insert(std::pair<std::string, std::map<int, long double>> (product, price_store));
+            Closing_Ask_Price_Store.insert(std::pair<std::string, std::map<int, long double>> (product, price_store));
         }
         else
         {
-            ret = Closing_Ask_Price_store.find(product)->second.emplace(timestamp_counter, sum_total/counter);
+            ret = Closing_Ask_Price_Store.find(product)->second.emplace(timestamp_counter, sum_total/counter);
             if(ret.second == true)
             {
-                Closing_Ask_Price_store.insert(std::pair<std::string, std::map<int, long double>> (product, price_store));
+                Closing_Ask_Price_Store.insert(std::pair<std::string, std::map<int, long double>> (product, price_store));
             }
         }
     }
-    return price_store[timestamp_counter]; // If either data with the same timestamp is already stored, then simply return the average. Data must be not stored again
+    return price_store[timestamp_counter]; // If the data with the same timestamp is already stored, then simply return the average. Data must be not stored again
 }
 
 //============================================================================================================
@@ -120,20 +120,18 @@ long double Bot::ClosingPrice(std::string product, OrderBookType orderType)
  3) For Ask, the predicted price = Bid closing price if the ask average of the past 10 timestamps is high than the closing price of Bid at the current timestamp */
 long double Bot::PredictPrice(std::string product, OrderBookType orderType)
 {
-    long double Ask_closing_price = ClosingPrice(product, OrderBookType::ask);
-    long double Bid_closing_price = ClosingPrice(product, OrderBookType::bid);
-    
-    long double price_sum = 0.0;
     if(timestamp_counter > 10)
     {
+        long double price_sum = 0.0;
         if (orderType == OrderBookType::bid)
         {
+            long double Ask_closing_price = ClosingPrice(product, OrderBookType::ask);
             for(int i = timestamp_counter - 10; i < timestamp_counter; i++)
             {
-                std::multimap<std::string, std::map<int, long double>>::iterator it = Closing_Bid_Price_store.find(product);
-                price_sum += it->second[i]; //as high as the minimum of the Ask price
+                std::multimap<std::string, std::map<int, long double>>::iterator it = Closing_Bid_Price_Store.find(product);
+                price_sum += it->second[i];
             }
-            if((price_sum / 10) < Ask_closing_price)
+            if((price_sum / 10) < Ask_closing_price) // maximize the chance to match
             {
                 return Ask_closing_price;
             }
@@ -141,22 +139,23 @@ long double Bot::PredictPrice(std::string product, OrderBookType orderType)
         }
         else
         {
+            long double Bid_closing_price = ClosingPrice(product, OrderBookType::bid);
             for(int i = timestamp_counter - 10; i < timestamp_counter; i++)
             {
-                std::multimap<std::string, std::map<int, long double>>::iterator it = Closing_Ask_Price_store.find(product);
-                price_sum += it->second[i]; //closer to the maximum of the bid price
+                std::multimap<std::string, std::map<int, long double>>::iterator it = Closing_Ask_Price_Store.find(product);
+                price_sum += it->second[i];
             }
-            if((price_sum / 10) > Bid_closing_price)
+            if((price_sum / 10) > Bid_closing_price) // maximize the chance to match
             {
                 return Bid_closing_price;
             }
         }
+        return price_sum/10;
     }
     else
     {
-        return ClosingPrice(product, orderType);
+        return ClosingPrice(product, orderType); // No enough data to predict a price
     }
-    return price_sum/10;
 }
 
 //============================================================================================================
@@ -165,7 +164,6 @@ long double Bot::LongTermEMA(std::string product, OrderBookType orderType)
 {
     std::map<int, long double> Bid;
     std::map<int, long double> Ask;
-    std::pair<std::map<int, long double>::iterator, bool> ret;
     
     double EMA_stamp = timestamp_counter; //the number of timestamps in EMA
     double k_value = 2.0 / (EMA_stamp + 1.0);
@@ -173,7 +171,7 @@ long double Bot::LongTermEMA(std::string product, OrderBookType orderType)
     if(orderType == OrderBookType::bid)
     {
         long double closingPrice = ClosingPrice(product, OrderBookType::bid);
-        if(timestamp_counter == 1)
+        if(timestamp_counter == 1) // no previous EMA can be calculated
         {
             Bid[timestamp_counter] = closingPrice;
             Bid_EMA_store.insert(std::pair<std::string, std::map<int, long double>> (product, Bid));
@@ -184,19 +182,14 @@ long double Bot::LongTermEMA(std::string product, OrderBookType orderType)
         {
             std::multimap<std::string, std::map<int, long double>>::iterator it = Bid_EMA_store.find(product);
             long double previousEMA = it->second[timestamp_counter-1];
-            ret = Bid_EMA_store.find(product)->second.emplace(timestamp_counter, ((closingPrice - previousEMA)* k_value)+ previousEMA);
-            if(ret.second == true) // There was nothing stored in the map within the multimap.
-            {
-                Bid[timestamp_counter] = ((closingPrice - previousEMA)* k_value)+ previousEMA;
-                Bid_EMA_store.insert(std::pair<std::string, std::map<int, long double>> (product, Bid));
-            }
-            return Bid[timestamp_counter];
+            Bid_EMA_store.find(product)->second.emplace(timestamp_counter, ((closingPrice - previousEMA)* k_value)+ previousEMA);
+            return it->second[timestamp_counter];
         }
     }
     else
     {
         long double closingPrice = ClosingPrice(product, OrderBookType::ask);
-        if(timestamp_counter == 1)
+        if(timestamp_counter == 1)// no previous EMA can be calculated
         {
             Ask[timestamp_counter] = closingPrice;
             Ask_EMA_store.insert(std::pair<std::string, std::map<int, long double>> (product, Ask));
@@ -207,13 +200,8 @@ long double Bot::LongTermEMA(std::string product, OrderBookType orderType)
         {
             std::multimap<std::string, std::map<int, long double>>::iterator it = Ask_EMA_store.find(product);
             long double previousEMA = it->second[timestamp_counter-1];
-            ret = Ask_EMA_store.find(product)->second.emplace(timestamp_counter, ((closingPrice - previousEMA)* k_value)+ previousEMA);
-            if(ret.second == true)// There was nothing stored in the map within the multimap.
-            {
-                Ask[timestamp_counter] = ((closingPrice - previousEMA)* k_value)+ previousEMA;
-                Ask_EMA_store.insert(std::pair<std::string, std::map<int, long double>> (product, Ask));
-            }
-            return Ask[timestamp_counter];
+            Ask_EMA_store.find(product)->second.emplace(timestamp_counter, ((closingPrice - previousEMA)* k_value)+ previousEMA);
+            return it->second[timestamp_counter];
         }
     }
 }
@@ -263,7 +251,7 @@ void Bot::makeBid(std::string product)
         {
             OrderBookEntry obe = CSVReader::stringsToOBE(
                 std::to_string(Predicted_price),
-                std::to_string(0.5),
+                std::to_string(1),
                 CurrentTime,
                 product,
                 OrderBookType::bid);
@@ -299,7 +287,7 @@ void Bot::makeAsk(std::string product)
         {
             OrderBookEntry obe = CSVReader::stringsToOBE(
                 std::to_string(Predicted_price),
-                std::to_string(0.5),
+                std::to_string(1),
                 CurrentTime,
                 product,
                 OrderBookType::ask
@@ -326,8 +314,8 @@ void Bot::NoWithdrawOrder()
 {
     for(int i = 0; i < tracker.size(); i++)
     {
-        Logger::BidAskLog(tracker[i].orderType, tracker[i].product, tracker[i].price, std::to_string(tracker[i].amount) , CurrentTime);
         orderBook.insertOrder(tracker[i], CurrentTime);
+        Logger::BidAskLog(tracker[i].orderType, tracker[i].product, tracker[i].price, std::to_string(tracker[i].amount) , CurrentTime);
     }
     tracker.clear();// temp vector has to be cleared for the next timestamp
 }
@@ -366,8 +354,8 @@ void Bot::AutomaticWithdrawOrder()
         {
             tracker.erase(tracker.begin() + i);
         }
-        Logger::BidAskLog(tracker[i].orderType, tracker[i].product, tracker[i].price, std::to_string(tracker[i].amount) , CurrentTime);
         orderBook.insertOrder(tracker[i], CurrentTime);
+        Logger::BidAskLog(tracker[i].orderType, tracker[i].product, tracker[i].price, std::to_string(tracker[i].amount) , CurrentTime);
     }
     tracker.clear(); // temp vector has to be cleared for the next timestamp
 }
@@ -376,7 +364,6 @@ void Bot::AutomaticWithdrawOrder()
 void Bot::GoToNextTimeframe()
 {
     timestamp_counter += 1;
-    
     for (std::string p : orderBook.getKnownProducts())
     {
         std::vector<OrderBookEntry> sales =  orderBook.matchAsksToBids(p, CurrentTime);
@@ -384,14 +371,12 @@ void Bot::GoToNextTimeframe()
         {
             if (sale.username == "bot" || sale.username == "simuser")
             {
-                // update the wallet
-                wallet.processSale(sale);
-                Logger::MatchLog(sale.orderType, sale.product, sale.price, std::to_string(sale.amount), CurrentTime);
-                Logger::AssetLog(wallet.toString(), CurrentTime);
+                wallet.processSale(sale);// update the wallet
+                Logger::MatchLog(sale.orderType, sale.product, sale.price, std::to_string(sale.amount), CurrentTime, LongTermEMA(sale.product, sale.orderType), ShortTermEMA(sale.product, sale.orderType));
             }
         }
     }
-
+    Logger::AssetLog(wallet.toString(), CurrentTime); // logging the wallet asset status
     CurrentTime = orderBook.getNextTime(CurrentTime);
     if(CurrentTime == "end") // stopping while loop in the init function.
     {
